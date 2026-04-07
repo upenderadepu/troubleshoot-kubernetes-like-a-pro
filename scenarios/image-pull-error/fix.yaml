@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: fixed-image-pull-pod
+  name: image-pull-error-fixed-pod
 spec:
   containers:
   - name: nginx
-    image: vellankikoti/nginx:latest
+    image: nginx:alpine

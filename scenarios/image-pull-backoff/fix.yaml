@@ -5,4 +5,5 @@ metadata:
 spec:
   containers:
   - name: busybox
-    image: busybox  # Valid image
+    image: busybox
+    command: ["sh", "-c", "sleep 3600"]

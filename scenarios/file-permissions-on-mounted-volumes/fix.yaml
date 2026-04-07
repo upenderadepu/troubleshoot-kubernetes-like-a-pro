@@ -6,10 +6,12 @@ spec:
   containers:
   - name: busybox
     image: busybox
+    command: ["sh", "-c", "echo test > /tmp/test.txt && sleep 3600"]
+    securityContext:
+      readOnlyRootFilesystem: true
     volumeMounts:
-    - mountPath: /data
-      name: data-volume
+    - name: tmp
+      mountPath: /tmp
   volumes:
-  - name: data-volume
-    hostPath:
-      path: /data  # Corrected path with appropriate permissions
+  - name: tmp
+    emptyDir: {}

@@ -1,19 +1,22 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: readiness-probe-failure-pod
+  name: liveness-readiness-failure-pod
 spec:
   containers:
-  - name: busybox
-    image: busybox
+  - name: nginx
+    image: nginx:alpine
+    livenessProbe:
+      httpGet:
+        path: /nonexistent
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 3
+      failureThreshold: 3
     readinessProbe:
       httpGet:
-        path: /healthz
-        port: 8080
-      initialDelaySeconds: 3
+        path: /nonexistent
+        port: 80
+      initialDelaySeconds: 5
       periodSeconds: 3
-      failureThreshold: 1
-    command:
-      - "sh"
-      - "-c"
-      - "echo 'Readiness probe failure' && sleep 1000"
+      failureThreshold: 3

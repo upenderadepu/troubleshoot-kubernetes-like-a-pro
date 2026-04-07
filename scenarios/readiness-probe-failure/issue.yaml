@@ -4,16 +4,12 @@ metadata:
   name: readiness-probe-issue-pod
 spec:
   containers:
-  - name: busybox
-    image: busybox
-    command:
-      - "sh"
-      - "-c"
-      - "echo 'Simulating readiness probe failure' && sleep 1000"
+  - name: nginx
+    image: nginx:alpine
     readinessProbe:
       httpGet:
-        path: /health
-        port: 8080
+        path: /nonexistent
+        port: 80
       initialDelaySeconds: 5
       periodSeconds: 3
       failureThreshold: 3

@@ -4,14 +4,11 @@ metadata:
   name: oom-killed-fixed-pod
 spec:
   containers:
-  - name: busybox
-    image: busybox
+  - name: stress
+    image: polinux/stress
     resources:
       limits:
-        memory: "500Mi"  # Increased memory limit
+        memory: "256Mi"
       requests:
-        memory: "300Mi"  # Increased memory request
-    command:
-      - "sh"
-      - "-c"
-      - "stress --vm 1 --vm-bytes 200Mi --vm-hang 0"  # Should work with the increased memory
+        memory: "128Mi"
+    command: ["stress", "--vm", "1", "--vm-bytes", "50M"]

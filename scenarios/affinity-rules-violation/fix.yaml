@@ -1,33 +1,10 @@
 apiVersion: v1
-kind: Node
+kind: Pod
 metadata:
-  name: <node-name>  # Replace with the name of an actual node in your cluster
+  name: affinity-violation-fixed-pod
   labels:
-    disktype: ssd  # Adding the required label to the node
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-app
+    app: my-app
 spec:
-  replicas: 3  # Ensure there are enough replicas
-  selector:
-    matchLabels:
-      app: my-app
-  template:
-    metadata:
-      labels:
-        app: my-app
-    spec:
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: disktype
-                operator: In
-                values:
-                - ssd  # This matches the label we added to the node
-      containers:
-      - name: nginx
-        image: nginx
+  containers:
+  - name: nginx
+    image: nginx:alpine

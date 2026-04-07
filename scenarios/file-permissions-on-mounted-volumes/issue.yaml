@@ -6,10 +6,6 @@ spec:
   containers:
   - name: busybox
     image: busybox
-    volumeMounts:
-    - mountPath: /data
-      name: data-volume
-  volumes:
-  - name: data-volume
-    hostPath:
-      path: /data  # Host path with restrictive permissions
+    command: ["sh", "-c", "echo test > /tmp/test.txt && sleep 3600"]
+    securityContext:
+      readOnlyRootFilesystem: true

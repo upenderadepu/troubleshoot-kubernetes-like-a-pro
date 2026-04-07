@@ -6,10 +6,13 @@ spec:
   containers:
   - name: busybox
     image: busybox
+    command: ["sh", "-c", "cat /data/myfile.txt && sleep 3600"]
     volumeMounts:
     - mountPath: /data
       name: data-volume
+      readOnly: true
   volumes:
   - name: data-volume
     hostPath:
-      path: /nonexistent-path  # Invalid path leading to disk I/O errors
+      path: /nonexistent-path
+      type: Directory

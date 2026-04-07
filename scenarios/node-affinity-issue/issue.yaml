@@ -6,6 +6,7 @@ spec:
   containers:
   - name: busybox
     image: busybox
+    command: ["sh", "-c", "sleep 3600"]
   affinity:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

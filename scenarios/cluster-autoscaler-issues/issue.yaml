@@ -3,7 +3,10 @@ kind: Deployment
 metadata:
   name: cluster-autoscaler-issue-deployment
 spec:
-  replicas: 100  # Too many replicas without enough nodes, causing autoscaler failure
+  replicas: 20
+  selector:
+    matchLabels:
+      app: cluster-autoscaler
   template:
     metadata:
       labels:
@@ -12,3 +15,4 @@ spec:
       containers:
       - name: busybox
         image: busybox
+        command: ["sh", "-c", "sleep 3600"]

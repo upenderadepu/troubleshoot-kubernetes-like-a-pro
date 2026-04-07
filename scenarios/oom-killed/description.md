@@ -1,14 +1,14 @@
 ## OOM Killed
 
 ### Description:
-The pod is terminated due to the Out of Memory (OOM) killer process being invoked, often leading to pod restarts.
+The pod is terminated due to the Out of Memory (OOM) killer because the `polinux/stress` container attempts to allocate more memory than its limit allows.
 
 ### Causes:
-- The container exceeds the memory limit.
-- Memory leaks in the application or excessive resource usage.
+- The container's memory limit (50Mi) is lower than the memory the stress tool tries to allocate (100M).
+- Memory leaks or excessive resource usage in the application.
 
 ### Fix:
-1. Review the memory usage of the application inside the container.
-2. Increase the memory resource requests and limits in the pod spec.
-3. Monitor the pod’s memory usage to identify spikes or memory leaks.
-4. Optimize the application to reduce memory consumption if needed.
+1. Increase the memory resource limits to accommodate the workload's actual memory needs.
+2. Reduce the memory consumption of the workload (e.g., lower `--vm-bytes` for stress).
+3. Monitor the pod's memory usage to identify spikes or memory leaks.
+4. Use `kubectl describe pod <pod-name>` to confirm the OOMKilled reason.

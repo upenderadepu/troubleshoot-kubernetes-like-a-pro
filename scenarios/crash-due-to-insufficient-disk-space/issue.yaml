@@ -6,6 +6,7 @@ spec:
   containers:
   - name: busybox
     image: busybox
+    command: ["sh", "-c", "dd if=/dev/zero of=/tmp/fill bs=1M count=10; sleep 3600"]
     resources:
-      requests:
-        storage: "10Gi"  # Excessive storage request leading to disk issues
+      limits:
+        ephemeral-storage: "5Mi"

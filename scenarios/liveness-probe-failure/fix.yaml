@@ -4,16 +4,12 @@ metadata:
   name: liveness-probe-failure-fixed-pod
 spec:
   containers:
-  - name: busybox
-    image: busybox
+  - name: nginx
+    image: nginx:alpine
     livenessProbe:
       httpGet:
-        path: /healthz
-        port: 8080  # Correct endpoint for health check
+        path: /
+        port: 80
       initialDelaySeconds: 5
       periodSeconds: 5
       failureThreshold: 3
-    command:
-      - "sh"
-      - "-c"
-      - "echo 'Liveness probe fixed' && sleep 1000"

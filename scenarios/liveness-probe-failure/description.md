@@ -1,14 +1,14 @@
 ## Liveness Probe Failure
 
 ### Description:
-The liveness probe fails, leading to the container being restarted because the container is considered unhealthy.
+The liveness probe fails because it checks a non-existent path (`/nonexistent`) on the nginx container. After the failure threshold is reached, Kubernetes kills and restarts the container, leading to a CrashLoopBackOff state.
 
 ### Causes:
-- Incorrect probe configuration (e.g., wrong endpoint or delay).
-- Application is not starting properly and is unable to respond to the probe.
+- Incorrect probe path that returns a 404 status code.
+- Misconfigured probe endpoint that does not match any route served by the application.
 
 ### Fix:
-1. Check the liveness probe configuration in the pod YAML.
-2. Verify if the application inside the container is working properly.
-3. Adjust the probe’s initial delay, timeout, and path as needed.
-4. Use `kubectl logs <pod-name>` to check application logs for any issues.
+1. Update the liveness probe path to a valid endpoint (e.g., `/` for nginx).
+2. Verify the application responds with a 200 status on the configured probe path.
+3. Adjust `initialDelaySeconds`, `periodSeconds`, and `failureThreshold` as needed.
+4. Use `kubectl describe pod <pod-name>` to check probe failure events.

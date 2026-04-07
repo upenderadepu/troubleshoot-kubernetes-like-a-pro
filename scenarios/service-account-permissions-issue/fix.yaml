@@ -9,5 +9,5 @@ spec:
     command:
       - "sh"
       - "-c"
-      - "echo 'Service account permission fixed' && sleep 1000"
-  serviceAccountName: valid-service-account  # Service account with proper permissions
+      - "echo 'Service account permission fixed' && sleep 3600"
+  serviceAccountName: default  # Default service account always exists in every namespace

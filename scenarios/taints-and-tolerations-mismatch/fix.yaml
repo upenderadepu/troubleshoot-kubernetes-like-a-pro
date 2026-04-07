@@ -9,9 +9,4 @@ spec:
     command:
       - "sh"
       - "-c"
-      - "echo 'Taints and tolerations fixed' && sleep 1000"
-  tolerations:
-    - key: "example-key"
-      operator: "Equal"
-      value: "example-value"
-      effect: "NoExecute"  # Correct matching taint
+      - "echo 'Taints and tolerations fixed' && sleep 3600"

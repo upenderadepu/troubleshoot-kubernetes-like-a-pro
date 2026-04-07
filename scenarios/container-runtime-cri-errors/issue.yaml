@@ -3,6 +3,8 @@ kind: Pod
 metadata:
   name: cri-error-pod
 spec:
+  runtimeClassName: non-existent-runtime
   containers:
   - name: busybox
     image: busybox
+    command: ["sh", "-c", "sleep 3600"]

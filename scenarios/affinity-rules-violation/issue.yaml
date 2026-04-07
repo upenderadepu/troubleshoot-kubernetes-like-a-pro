@@ -16,4 +16,4 @@ spec:
             - ssd
   containers:
   - name: nginx
-    image: nginx
+    image: nginx:alpine

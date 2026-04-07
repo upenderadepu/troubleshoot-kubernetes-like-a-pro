@@ -4,16 +4,12 @@ metadata:
   name: readiness-probe-fixed-pod
 spec:
   containers:
-  - name: busybox
-    image: busybox
-    command:
-      - "sh"
-      - "-c"
-      - "echo 'Readiness probe fixed' && sleep 1000"
+  - name: nginx
+    image: nginx:alpine
     readinessProbe:
       httpGet:
-        path: /healthz  # Fixed the path for readiness probe
-        port: 8080
+        path: /
+        port: 80
       initialDelaySeconds: 5
       periodSeconds: 3
       failureThreshold: 3

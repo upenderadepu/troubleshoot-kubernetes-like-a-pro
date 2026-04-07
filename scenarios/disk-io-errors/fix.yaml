@@ -6,10 +6,10 @@ spec:
   containers:
   - name: busybox
     image: busybox
+    command: ["sh", "-c", "ls /data && sleep 3600"]
     volumeMounts:
     - mountPath: /data
       name: data-volume
   volumes:
   - name: data-volume
-    hostPath:
-      path: /valid-path  # Corrected path
+    emptyDir: {}

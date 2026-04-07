@@ -1,19 +1,22 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: readiness-probe-failure-fixed-pod
+  name: liveness-readiness-failure-fixed-pod
 spec:
   containers:
-  - name: busybox
-    image: busybox
-    readinessProbe:
+  - name: nginx
+    image: nginx:alpine
+    livenessProbe:
       httpGet:
-        path: /healthz
-        port: 8080  # Correct endpoint for readiness check
+        path: /
+        port: 80
       initialDelaySeconds: 5
       periodSeconds: 5
       failureThreshold: 3
-    command:
-      - "sh"
-      - "-c"
-      - "echo 'Readiness probe fixed' && sleep 1000"
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 3

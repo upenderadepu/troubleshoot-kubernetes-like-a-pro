@@ -6,6 +6,7 @@ spec:
   containers:
   - name: busybox
     image: busybox
+    command: ["sh", "-c", "echo healthy && sleep 3600"]
     resources:
-      requests:
-        storage: "1Gi"  # Reduced storage request
+      limits:
+        ephemeral-storage: "100Mi"

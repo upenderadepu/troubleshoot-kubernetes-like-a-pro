@@ -4,9 +4,9 @@ metadata:
   name: failed-resource-limits-pod
 spec:
   containers:
-  - name: busybox
-    image: busybox
+  - name: stress
+    image: polinux/stress
+    command: ["stress", "--vm", "1", "--vm-bytes", "64M"]
     resources:
       limits:
-        cpu: "100m"
-        memory: "500Mi"  # Limited resources causing pod to fail under load
+        memory: "32Mi"

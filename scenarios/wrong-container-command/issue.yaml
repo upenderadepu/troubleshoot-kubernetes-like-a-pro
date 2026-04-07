@@ -7,8 +7,4 @@ spec:
   - name: busybox
     image: busybox
     command:
-      - "invalid-command"  # Invalid command
-    command:
-      - "sh"
-      - "-c"
-      - "echo 'Simulating wrong container command' && sleep 1000"
+      - "invalid-command-that-does-not-exist"

@@ -6,7 +6,8 @@ spec:
   containers:
   - name: busybox
     image: busybox
+    command: ["sh", "-c", "sleep 3600"]
     resources:
       requests:
-        cpu: "500m"  # Adjusted resource request
-        memory: "1Gi"
+        cpu: "100m"  # Adjusted resource request
+        memory: "64Mi"

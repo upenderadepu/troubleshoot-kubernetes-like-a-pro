@@ -6,12 +6,6 @@ spec:
   containers:
   - name: busybox
     image: busybox
-    command:
-      - "sh"
-      - "-c"
-      - "echo 'PID namespace fixed' && sleep 1000"
-  securityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
-    pid: Container  # Fixed PID namespace usage
+    command: ["sh", "-c", "echo 'PID namespace isolated' && sleep 3600"]
+    securityContext:
+      runAsUser: 1000

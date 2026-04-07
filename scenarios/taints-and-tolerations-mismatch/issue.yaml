@@ -9,9 +9,6 @@ spec:
     command:
       - "sh"
       - "-c"
-      - "echo 'Simulating taints and tolerations mismatch' && sleep 1000"
-  tolerations:
-    - key: "example-key"
-      operator: "Equal"
-      value: "example-value"
-      effect: "NoExecute"  # Toleration mismatch with taint
+      - "echo 'Simulating taints and tolerations mismatch' && sleep 3600"
+  nodeSelector:
+    non-existent-taint-label: "true"  # No node has this label, so pod stays Pending

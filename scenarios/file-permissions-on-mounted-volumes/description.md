@@ -1,13 +1,16 @@
 ## File Permissions on Mounted Volumes
 
 ### Description:
-A pod fails to access or write to files on a mounted volume due to incorrect file permissions.
+A pod fails because it cannot write to the filesystem. When `readOnlyRootFilesystem` is set to `true` in the security context, all writes to the root filesystem are denied. This is a security best practice, but applications that need to write temporary files will fail unless writable volumes are mounted.
+
+### How to Reproduce:
+The `issue.yaml` creates a pod with `readOnlyRootFilesystem: true` that tries to write to `/tmp/test.txt`. The write fails because the entire root filesystem is read-only, causing the container to exit with an error.
 
 ### Causes:
-- The pod is running under a user with insufficient privileges.
-- The volume has restrictive file permissions that prevent the pod from accessing the files.
+- `readOnlyRootFilesystem: true` set without providing writable volume mounts for directories the application needs to write to.
+- Application writes to paths that are not backed by mounted volumes.
 
 ### Fix:
-1. Check the file permissions on the mounted volume (`kubectl exec <pod-name> -- ls -l <mount-path>`).
-2. Adjust the permissions on the volume or set the correct security context in the pod specification.
-3. Use the `fsGroup` field in the pod's security context to set the group ID for mounted volumes.
+1. Identify which directories the application needs to write to (e.g., `/tmp`, `/var/log`).
+2. Mount an `emptyDir` volume at those paths to provide a writable layer.
+3. The `fix.yaml` keeps `readOnlyRootFilesystem: true` but adds an `emptyDir` volume mounted at `/tmp`, allowing the application to write temporary files securely.

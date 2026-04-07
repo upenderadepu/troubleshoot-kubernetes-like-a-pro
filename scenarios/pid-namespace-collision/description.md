@@ -1,13 +1,14 @@
 ## PID Namespace Collision
 
 ### Description:
-PID namespace collision occurs when two containers within the same pod attempt to use the same process ID (PID), leading to unexpected behavior or errors.
+The pod is configured with `hostPID: true`, which exposes the host's process namespace to the container. This is a security risk as the container can see and potentially interact with all host processes.
 
 ### Causes:
-- Misconfigured `hostPID` or `hostIPC` settings in the pod spec.
-- Resource conflicts when running multiple containers that share namespaces.
+- Misconfigured `hostPID: true` setting in the pod spec, sharing the host's PID namespace.
+- The container can view all processes running on the host node.
 
 ### Fix:
-1. Ensure that the `hostPID` and `hostIPC` settings are not misconfigured unless necessary.
-2. If sharing namespaces is required, configure them properly to avoid collisions.
-3. Review container logs and adjust container specifications to isolate processes.
+1. Remove `hostPID: true` from the pod spec unless explicitly required.
+2. Remove `shareProcessNamespace: true` unless containers in the pod need to share process visibility.
+3. Verify the pod runs with isolated PID namespace by default.
+4. Review pod security policies or admission controllers to prevent accidental hostPID usage.

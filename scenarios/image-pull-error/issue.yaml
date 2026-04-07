@@ -5,4 +5,4 @@ metadata:
 spec:
   containers:
   - name: nginx
-    image: vellankikoti/nginx:latest
+    image: private-registry.example.com/nginx:v999

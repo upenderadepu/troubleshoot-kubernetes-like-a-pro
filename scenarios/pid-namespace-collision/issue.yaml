@@ -3,15 +3,10 @@ kind: Pod
 metadata:
   name: pid-namespace-collision-pod
 spec:
+  hostPID: true
   containers:
   - name: busybox
     image: busybox
-    command:
-      - "sh"
-      - "-c"
-      - "echo 'PID namespace collision detected' && sleep 1000"
-  securityContext:
-    runAsUser: 1000
-    runAsGroup: 1000
-    fsGroup: 1000
-    pid: Host  # Cause namespace collision
+    command: ["sh", "-c", "echo 'WARNING: Host PID namespace shared - security risk' && sleep 3600"]
+    securityContext:
+      runAsUser: 1000
