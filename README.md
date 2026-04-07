@@ -13,11 +13,11 @@ Welcome to the **Kubernetes Troubleshooting Scenarios Simulator**! This reposito
 
 ## Features
 
-- **35 Kubernetes troubleshooting scenarios** covering networking, storage, security, performance, and more.
-- **Dockerfiles** are provided for building containerized environments to simulate each scenario (only when needed).
-- **Automation script** to build and push Docker images for all scenarios to DockerHub.
+- **35 Kubernetes troubleshooting scenarios** covering networking, storage, security, probes, scheduling, resources, and more.
+- **No custom Docker images needed** — all scenarios use standard public images (`busybox`, `nginx:alpine`, `polinux/stress`).
+- **Observable failures** — 30 scenarios produce clear failure states (Pending, CrashLoopBackOff, OOMKilled, Error) visible via `kubectl get pods`.
+- **Interactive scenario runner** (`manage-scenarios.sh`) to simulate, investigate, and fix issues step by step.
 - **Practical solutions** and explanations to help you understand the root causes of issues.
-- **Comprehensive troubleshooting tips**: Includes best practices and additional troubleshooting strategies for real-world Kubernetes environments.
 
 ---
 
@@ -49,67 +49,7 @@ Welcome to the **Kubernetes Troubleshooting Scenarios Simulator**! This reposito
 
 ---
 
-## Building Docker Images
-
-### How Docker Images Are Built
-
-Docker images are used to simulate the scenarios, and the Dockerfiles are located in the `dockerfiles/` folder, separate from the scenario folders. **You don’t need to manually create an image for every scenario**. Instead, you can use the provided automation script to build and push all images at once.
-
-### Step 1: Configure Your DockerHub Username
-
-Before building and pushing images, make sure to configure your DockerHub username in the automation script. The default username is set to **`vellankikoti`**, but you can easily replace it with your own DockerHub username.
-
-1. Open the automation script file: `scripts/build_and_push.sh`
-2. Replace the username in the script:
-   ```bash
-   DOCKER_USERNAME="vellankikoti"  # Change this to your DockerHub username
-   ```
-
-### Step 2: Build and Push Docker Images
-
-Once the username is configured, you can run the automation script to build all Docker images and push them to DockerHub:
-
-1. **Run the script**:
-   ```bash
-   ./scripts/build_and_push.sh
-   ```
-
-2. The script will automatically:
-   - Build the Docker images for the scenarios that require them (based on the Dockerfiles in `dockerfiles/`).
-   - Tag the images with your DockerHub username.
-   - Push the images to your DockerHub account.
-
-### Step 3: Running the Docker Containers Locally
-
-Once the images are pushed to DockerHub, you can run the containers to simulate the troubleshooting scenarios locally. To do this:
-
-1. Pull the image from DockerHub:
-   ```bash
-   docker pull <your-dockerhub-username>/<scenario-name>:latest
-   ```
-
-2. Run the container:
-   ```bash
-   docker run -it --rm <your-dockerhub-username>/<scenario-name>:latest
-   ```
-
-For example, to run the "Affinity Rules Violation" scenario:
-```bash
-docker run -it --rm vellankikoti/affinity-rules-violation:latest
-```
-
-### Step 4: Clean Up
-
-After running the container, you can remove the image (optional) to free up space:
-```bash
-docker rmi <your-dockerhub-username>/<scenario-name>:latest
-```
-
----
-
-## Running the Scenarios in Kubernetes
-
-If you have access to a Kubernetes cluster, you can run these scenarios directly within your cluster.
+## Running the Scenarios
 
 ### Step 1: Make the Script Executable
 
@@ -155,29 +95,28 @@ kubectl get pods
 
 ## Folder Structure
 
-The repository is organized as follows:
-
 ```
 troubleshoot-kubernetes-like-a-pro/
-├── dockerfiles/
-│   ├── affinity-rules-violation/
-│   ├── dns-resolution-failure/
-│   ├── resource-issues/
-│   └── ...
 ├── scenarios/
 │   ├── affinity-rules-violation/
+│   │   ├── description.md    # Explains the issue, causes, and fix
+│   │   ├── issue.yaml        # Creates the broken state
+│   │   └── fix.yaml          # Resolves the issue
+│   ├── crashloopbackoff/
 │   ├── dns-resolution-failure/
-│   ├── resource-issues/
-│   └── ...
+│   └── ... (35 scenarios)
+├── docs/
+│   ├── pod-lifecycle.md
+│   └── troubleshooting-guide.md
 ├── scripts/
-│   └── build_and_push.sh  # Automation script to build and push Docker images
-├── manage-scenarios.sh    # Script to simulate and manage scenarios in Kubernetes
+│   └── manage-scenarios.sh
+├── manage-scenarios.sh       # Interactive scenario runner
 └── README.md
 ```
 
-- **dockerfiles/**: Contains Dockerfiles to build images for scenarios.
-- **scenarios/**: Contains individual scenario folders, each with YAML files (`issue.yaml`, `fix.yaml`) and a `description.md`.
-- **scripts/**: Contains the automation script for building and pushing Docker images (`build_and_push.sh`).
+- **scenarios/**: Contains 35 scenario folders, each with `issue.yaml`, `fix.yaml`, and `description.md`.
+- **docs/**: Supplementary guides on pod lifecycle and troubleshooting.
+- **scripts/**: Contains the scenario management script.
 
 ---
 
@@ -185,41 +124,51 @@ troubleshoot-kubernetes-like-a-pro/
 
 The repository includes the following 35 Kubernetes troubleshooting scenarios:
 
-1. **Affinity Rules Violation**
-2. **DNS Resolution Failure**
-3. **Insufficient Resources**
-4. **Outdated Kubernetes Version**
-5. **Security Context Issues**
-6. **CGroup Issues**
-7. **Failed Resource Limits**
-8. **Liveness Probe Failure**
-9. **Persistent Volume Claim Issues**
-10. **SELinux/AppArmor Policy Violation**
-11. **Cluster Autoscaler Issues**
-12. **File Permissions on Mounted Volumes**
-13. **Liveness & Readiness Failure**
-14. **PID Namespace Collision**
-15. **Service Account Permissions Issue**
-16. **Container Runtime (CRI) Errors**
-17. **Firewall Restriction**
-18. **LoadBalancer Service Misconfiguration**
-19. **Pod Disruption Budget Violations**
-20. **Service Port Mismatch**
-21. **Crash Due to Insufficient Disk Space**
-22. **Image Pull Backoff**
-23. **Network Connectivity Issues**
-24. **Port Binding Issues**
-25. **Taints and Tolerations Mismatch**
-26. **CrashLoopBackOff**
-27. **Image Pull Error**
-28. **Node Affinity Issue**
-29. **Readiness Probe Failure**
-30. **Volume Mount Issue**
-31. **Disk IO Errors**
-32. **Ingress Configuration Issue**
-33. **OOM Killed**
-34. **Resource Requests & Limits Mismatch**
-35. **Wrong Container Command**
+| # | Scenario | Failure Type | Observable State |
+|---|----------|-------------|-----------------|
+| 1 | **Affinity Rules Violation** | Scheduling | Pod Pending |
+| 2 | **CGroup Issues** | Resource / OOM | OOMKilled / CrashLoopBackOff |
+| 3 | **Cluster Autoscaler Issues** | Scheduling | Pods Pending (100 replicas) |
+| 4 | **Container Runtime (CRI) Errors** | Runtime | RuntimeClass not found |
+| 5 | **Crash Due to Insufficient Disk Space** | Storage | Pod Evicted |
+| 6 | **CrashLoopBackOff** | Application | CrashLoopBackOff |
+| 7 | **Disk IO Errors** | Storage | Container Error |
+| 8 | **DNS Resolution Failure** | Networking | DNS timeout (pod runs but DNS fails) |
+| 9 | **Failed Resource Limits** | Resource / OOM | OOMKilled / CrashLoopBackOff |
+| 10 | **File Permissions on Mounted Volumes** | Storage / Security | Read-only filesystem error |
+| 11 | **Firewall Restriction** | Networking | Egress blocked by NetworkPolicy |
+| 12 | **Image Pull Backoff** | Image | ImagePullBackOff |
+| 13 | **Image Pull Error** | Image | ErrImagePull |
+| 14 | **Ingress Configuration Issue** | Networking | Misconfigured Ingress |
+| 15 | **Insufficient Resources** | Scheduling | Pod Pending |
+| 16 | **Liveness Probe Failure** | Probes | CrashLoopBackOff (probe fails) |
+| 17 | **Liveness & Readiness Failure** | Probes | CrashLoopBackOff + Not Ready |
+| 18 | **LoadBalancer Service Misconfiguration** | Networking | Service targets wrong selector |
+| 19 | **Network Connectivity Issues** | Networking | Egress blocked by NetworkPolicy |
+| 20 | **Node Affinity Issue** | Scheduling | Pod Pending |
+| 21 | **OOM Killed** | Resource / OOM | OOMKilled / CrashLoopBackOff |
+| 22 | **Outdated Kubernetes Version** | Best Practice | Running (educational) |
+| 23 | **Persistent Volume Claim Issues** | Storage | Pod Pending (PVC unbound) |
+| 24 | **PID Namespace Collision** | Security | Running with hostPID (security risk) |
+| 25 | **Pod Disruption Budget Violations** | Availability | PDB blocks disruption |
+| 26 | **Port Binding Issues** | Networking | Port conflict |
+| 27 | **Readiness Probe Failure** | Probes | Running but Not Ready (0/1) |
+| 28 | **Resource Requests & Limits Mismatch** | Resource | API rejection (limit < request) |
+| 29 | **Security Context Issues** | Best Practice | Running as root (educational) |
+| 30 | **SELinux/AppArmor Policy Violation** | Best Practice | Running (educational) |
+| 31 | **Service Account Permissions Issue** | RBAC | Pod creation fails (SA not found) |
+| 32 | **Service Port Mismatch** | Networking | Service port mismatch |
+| 33 | **Taints and Tolerations Mismatch** | Scheduling | Pod Pending |
+| 34 | **Volume Mount Issue** | Storage | API rejection (volume not defined) |
+| 35 | **Wrong Container Command** | Application | RunContainerError |
+
+### Scenario Categories
+
+- **Hard Failures (30 scenarios):** These produce a clear, observable failure state (Pending, CrashLoopBackOff, OOMKilled, Error, etc.) that you can diagnose with `kubectl get pods`, `kubectl describe`, and `kubectl logs`.
+
+- **Best Practice / Educational (3 scenarios):** Scenarios #22 (Outdated K8s Version), #29 (Security Context), and #30 (SELinux/AppArmor) are configuration best-practice demos. Both the issue and fix pods will show as Running — the learning is in understanding the security implications of the configuration difference.
+
+- **CNI-Dependent (2 scenarios):** Scenarios #11 (Firewall Restriction) and #19 (Network Connectivity) use Kubernetes NetworkPolicy to simulate blocked traffic. These require a CNI plugin that supports NetworkPolicy enforcement (e.g., **Calico**, **Cilium**, **Weave Net**). They will not demonstrate the issue on clusters using basic flannel or Docker Desktop’s default CNI.
 
 ---
 
@@ -233,7 +182,7 @@ The repository includes the following 35 Kubernetes troubleshooting scenarios:
 
 - If a fix doesn’t resolve the issue, verify cluster configurations and try reapplying the scenario.
 
-- In case the Docker container is not sufficient for troubleshooting, switch to Kubernetes to inspect and apply fixes directly.
+- For NetworkPolicy scenarios (#11, #19), ensure your cluster has a CNI that supports NetworkPolicy (e.g., Calico, Cilium).
 
 ---
 
